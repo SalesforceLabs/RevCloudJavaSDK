@@ -1,0 +1,25 @@
+package ${package};
+
+import java.util.Date;
+import java.util.List;
+
+/**
+ * ${type.description}
+ */
+public class ${type.name} {
+#foreach ($prop in $type.properties)
+    private ${prop.getDataType()} ${prop.name};
+#end
+
+#foreach ($prop in $type.properties)
+    public ${prop.getDataType()} get${prop.getCapitalizedName()}() {
+        return this.${prop.name};
+    }
+
+    public ${type.name} set${prop.getCapitalizedName()}(${prop.getDataType()} value) {
+        this.${prop.name} = value;
+        return this;
+    }
+
+#end
+}

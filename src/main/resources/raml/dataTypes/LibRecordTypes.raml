@@ -1,0 +1,263 @@
+#%RAML 1.0 Library
+# Our record types can be SalesTransaction, SalesTransactionItem, PriceAdjustmentGroup, PriceAdjustmentItem or
+# any concrete implementation of these existing entity interfaces.
+# Guidelines:
+#   Every new type should include attributes (required and type)
+types:
+  SalesTransaction:
+    type: object
+    properties:
+      attributes:
+        required: true
+        type: !include Attributes.raml
+      CurrencyIsoCode:
+        required: false
+        type: string
+        description: The currency ISO Code.
+      TotalListAmount:
+        required: false
+        type: number
+        description: The summation of all the `SalesTransactionItem.ListPriceTotal` fields.
+      TotalAmount:
+        required: false
+        type: number
+        description: The summation of all the `SalesTransactionItem.TotalPrice` fields.
+      TotalProductAmount:
+        required: false
+        type: number
+        description: The summation of all the `SalesTransactionItem.StartingPriceTotal` fields where `SalesTransactionItem.Type == Product`.
+      TotalAdjustmentAmount:
+        required: false
+        type: number
+        description: The summation of all the `SalesTransactionItem.TotalAdjustmentAmount` fields.
+      TotalAdjustmentDistAmount:
+        required: false
+        type: number
+        description: The summation of all the `SalesTransactionItem.TotalAdjustmentDistAmount` fields.
+
+  SalesTransactionItem:
+    type: object
+    properties:
+      attributes:
+        required: true
+        type: !include Attributes.raml
+      SalesTransactionId:
+        required: true
+        type: string
+        description: The SalesTransaction that this SalesItem belongs to.
+      ProductId:
+        required: true
+        type: string
+        description: A reference to the product represented by this SalesItem.
+      CurrencyIsoCode:
+        required: false
+        type: string
+        description: The currency ISO code.
+      SalesItemType:
+        required: false
+        type: string
+        enum: [Product, Charge]
+        description: Indicates whether the SalesItem is a charge or a sellable product. The default value is `Product`. 
+      Quantity:
+        required: true
+        type: number
+        description: The number of items being bought.
+      ListPrice:
+        required: false
+        type: number
+        description: The MSRP of the product.
+      StartingUnitPrice:
+        required: false
+        type: number
+        description: The starting unit price (also known as the _customer price_ or _starting price_) of the product.
+      StartingUnitPriceSource:
+        required: false
+        type: string
+        enum: [System, Manual]
+        description: Indicates whether the starting unit price is entered manually or is drawn from the price book or other internal system. If the StartingUnitPrice is not specified, the default value is `System`. Otherwise, the default value is `Manual`.
+      NetUnitPrice:
+        required: false
+        type: number
+        description: The final unit price of the product after all adjustments have been applied.
+      ListPriceTotal:
+        required: false
+        type: number
+        description: Rounded(Quantity * ListPrice). The value is rounded only if a rounding mode is specified. 
+      StartingPriceTotal:
+        required: false
+        type: number
+        description: Rounded(Quantity * StartingUnitPrice). The value is rounded only if a rounding mode is specified. 
+      TotalLineAmount:
+        required: false
+        type: number
+        description: Rounded(PricingTermCount * StartingPriceTotal). The value is rounded only if a rounding mode is specified.
+      TotalAdjustmentAmount:
+        required: false
+        type: number
+        description: The summation of `PriceAdjustmentItem.TotalAmount` for this item.
+      TotalAdjustmentDistAmount:
+        required: false
+        type: number
+        description: The summation of `PriceAdjustmentItem.TotalAmount` that comes from header-level group adjustments. 
+      TotalPrice:
+        required: false
+        type: number
+        description: The summation of `TotalAdjustmentAmount + TotalLineAmount` for this item.
+      StockKeepingUnit:
+        required: false
+        type: string
+        description: Product SKU for the SalesItem. The default value is `Product2.StockKeepingUnit`.
+      PricebookEntryId:
+        required: false
+        type: string
+        description: A reference to the PricebookEntry object. 
+      ProductSellingModelId:
+        required: true
+        type: string
+        description: A reference to the ProductSellingModel object. 
+      StartDate:
+        required: false
+        type: date-only
+        description: The start date for the subscription in the format `yyyy-mm-dd`. Required when pricing evergreen and term-defined products. Can be specified either at the header or the line item level or both. When specified at both places, line item start date gets precedence over header start date. 
+      EndDate:
+        required: false
+        type: date-only
+        description: The end date for the subscription in the format `yyyy-mm-dd`. Used only when pricing term-defined products. Can be specified either at the header or the line item level or both. When specified at both places, line item end date gets precedence over header end date. 
+      SubscriptionTerm:
+        required: false
+        type: number
+        description: The number of terms over which the subscription spans. Used only when pricing term-defined products. You can specify either End Date or Subscription Term when pricing term-defined products but not both. Can be specified either at the header or the line item level or both. When specified at both places, line item subscription term gets precedence over header subscription term. 
+      ProFormaBillingPeriodAmount:
+        required: false
+        type: number
+        description: The preliminary price to charge per billing period. The final billing period amount on the billing schedule can include subsequent amendments, discounts, or charges.
+      PricingTermCount:
+        required: false
+        type: number
+        description: A calculated field indicating the number of pricing terms in the subscription. For one-time and evergreen products, PricingTermCount is 1. 
+      BillingFrequency:
+        required: false
+        type: string
+        enum: [Monthly]
+        description: The interval at which an account is billed.
+      PeriodBoundary:
+        required: false
+        type: string
+        enum: [AlignToCalendar, Anniversary, DayOfPeriod, EndOfPeriod]
+        description: A delimiter that determines when a period starts and ends. The default value is `Anniversary`.
+      PeriodBoundaryDay:
+        required: false
+        type: number
+        description: The number specifying the day number when Period Boundary is a specific day in a week/month/year.
+      ProrationPolicyId: 
+        required: false
+        type: string
+        description: A foreign key to ProrationPolicy. 
+      PricingTransactionType:
+        required: false
+        type: string
+        enum: [NewSale, Cancellation]
+        description: Enum that captures the intent behind the action that is being performed on pricing.
+      BasisTransactionItemId:
+        required: false
+        type: string
+        description: Points to a previous sales transaction item to use for calculations for the given PricingTransactionType.
+
+  PriceAdjustmentGroup:
+    type: object
+    properties:
+      attributes:
+        required: true
+        type: !include Attributes.raml
+      CurrencyIsoCode:
+        required: false
+        type: string
+        description: The currency ISO Code.
+      SalesTransactionId:
+        required: true
+        type: string
+        description: The Sales Transaction tied to this Price Adjustment Group.
+      Description:
+        required: false
+        type: string
+        description: Description of the Price Adjustment Group.
+      TotalAmount:
+        required: false
+        type: number
+        description: Summation of all the PriceAdjustmentItem.TotalAmount fields.
+      AdjustmentType:
+        required: true
+        type: string
+        enum: [AdjustmentPercentage, AdjustmentAmount]
+        description: Enum to define the type of price adjustment.
+      AdjustmentValue:
+        required: true
+        type: number
+        description: A number to represent the price adjustment value itself.
+      AdjustmentSource:
+        required: true
+        type: string
+        enum: [System, Discretionary, Promotion]
+        description: Helps you track the type of price adjustment. Discretionary indicates that the price adjustment was entered manually by the sales rep. Promotion indicates that the price adjustment results from a promotion.  
+      Priority:
+        required: false
+        type: number
+        description: Set the sequence in which adjustments are applied.
+      PriceAdjustmentCauseId:
+        required: false
+        type: string
+        description: A reference to the PriceAdjCauseInterface.
+
+  PriceAdjustmentItem:
+    type: object
+    properties:
+      attributes:
+        required: true
+        type: !include Attributes.raml
+      CurrencyIsoCode:
+        required: false
+        type: string
+        description: The currency ISO Code.
+      SalesTransactionItemId:
+        required: true
+        type: string
+        description: The sales transaction item associated with this price adjustment item.
+      PriceAdjustmentGroupId:
+        required: false
+        type: string
+        description: A reference to the price adjustment group.
+      AdjustmentSource:
+        required: true
+        type: string
+        enum: [System, Discretionary, Promotion]
+        description: Enum to define the source of Price Adjustment. Discretionary indicates that the price adjustment was entered manually by the sales rep. Promotion indicates that the price adjustment results from a promotion. 
+      Description:
+        required: false
+        type: string
+        description: Description of the adjustment.
+      TotalAmount:
+        required: false
+        type: number
+        description: Total rounded amount of prorated adjustment contributed to by this price adjustment item. Will be rounded only if a Rounding Mode is specified.
+      AdjustmentType:
+        required: true
+        type: string
+        enum: [AdjustmentPercentage, AdjustmentAmount]
+        description: Enum to define the type of price adjustment.
+      AdjustmentValue:
+        required: true
+        type: number
+        description: A number to represent the price adjustment value itself.
+      Priority:
+        required: false
+        type: number
+        description: Set the sequence in which adjustments are applied.
+      PriceAdjustmentCauseId:
+        required: false
+        type: string
+        description: A reference to the PriceAdjCauseInterface.
+      AdjustmentAmountScope:
+        required: false
+        type: string
+        enum: [Unit, Total]
+        description: Enum to define the scope of `AdjustmentAmount`. Required only when `AdjustmentType = AdjustmentAmount`. 

@@ -1,0 +1,97 @@
+#%RAML 1.0
+title: Prices
+description: !include docs/pricing-overview.md
+mediaType:
+  - application/json
+version: "v54.0"
+protocols:
+  - HTTPS
+baseUri: https://{MyDomainName}.my.salesforce.com/services/data/{version}
+baseUriParameters:
+  MyDomainName:
+    required: true
+    description: A custom subdomain specific to a Salesforce org, for example, https://yourcompanyname.my.salesforce.com.
+securitySchemes:
+  OAuth2:
+    type: OAuth 2.0
+    settings:
+      authorizationUri: https://login.salesforce.com/services/oauth2/authorize
+      accessTokenUri: https://login.salesforce.com/services/oauth2/token
+      authorizationGrants:
+        - implicit
+documentation:
+  - title: Volume-Based Price Adjustment
+    content: !include docs/example-volume.md
+  - title: One-Time Purchase Without Adjustments
+    content: !include docs/example-one-time.md
+  - title: Termed Subscription with Price Adjustment
+    content: !include docs/example-termed-pai.md
+
+# TODO - Add XML Input and output types
+types:
+  CalculatePriceRequest:
+    type: !include dataTypes/CalculatePriceRequest.raml
+  Graph:
+    type: !include dataTypes/Graph.raml
+  Record:
+    type: !include dataTypes/Record.raml
+  SalesTransaction:
+    type: !include dataTypes/SalesTransaction.raml
+  SalesTransactionItem:
+    type: !include dataTypes/SalesTransactionItem.raml
+  PriceAdjustmentGroup:
+    type: !include dataTypes/PriceAdjustmentGroup.raml
+  PriceAdjustmentItem:
+    type: !include dataTypes/PriceAdjustmentItem.raml
+  CalculatePriceResponse:
+    type: !include dataTypes/output/ObjectGraphResponseRepresentation.raml
+
+# Resource end-point for calculating price of a SalesTransaction
+/commerce/pricing/{objectName}/actions/calculate-price:
+  uriParameters:
+    objectName:
+      description: The API name of the object to be priced. The only object currently supported is salestransaction.
+      example: salestransaction
+      type: string
+  post:
+    displayName: Calculate price
+    description: Calculate the price of the provided items, considering the subscription term and discounts.
+    body:
+      application/json:
+        description: Input payload containing the items to price, as well as any discounts.
+        type: CalculatePriceRequest
+
+    # We support all these response codes
+    # 4xx is thrown during input validation
+    # 500 is thrown when we have a Generic Error. We also send a GACK with a Stacktrace to track this
+    responses:
+      201:
+        body:
+          # TODO - Add application/xml as a supported body type
+          application/json:
+            type: CalculatePriceResponse
+            examples: !include types/json/responseBodyExamples/200.raml
+      400:
+        body:
+          # TODO - Add application/xml as a supported body type
+          application/json:
+            type: CalculatePriceResponse
+            examples: !include types/json/responseBodyExamples/400.raml
+      403:
+        body:
+          # TODO - Add application/xml as a supported body type
+          application/json:
+            type: CalculatePriceResponse
+            examples: !include types/json/responseBodyExamples/403.raml
+      404:
+        body:
+          # TODO - Add application/xml as a supported body type
+          application/json:
+            type: CalculatePriceResponse
+            examples: !include types/json/responseBodyExamples/404.raml
+      500:
+        body:
+          # TODO - Add application/xml as a supported body type
+          application/json:
+            type: CalculatePriceResponse
+            examples: !include types/json/responseBodyExamples/500.raml

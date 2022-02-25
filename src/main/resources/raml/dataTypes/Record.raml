@@ -1,0 +1,19 @@
+#%RAML 1.0 DataType
+description: SObject Graph Record with Reference Id
+type: object
+examples: 
+  Here is an example of a sales transaction item record: !include ../examples/recordSTI.json
+
+# The RAML Library that contains the SObject Record type definition
+uses:
+  lib: LibRecordTypes.raml
+
+properties:
+  referenceId:
+    required: true
+    type: string
+    description: The record reference Id
+  record:
+    required: true
+    type: lib.SalesTransaction | lib.SalesTransactionItem | lib.PriceAdjustmentGroup | lib.PriceAdjustmentItem
+    description: The SObject Record type. Can be either SalesTransaction, SalesTransactionItem, PriceAdjustmentGroup and PriceAdjustmentItem

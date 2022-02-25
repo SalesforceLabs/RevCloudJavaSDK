@@ -1,0 +1,16 @@
+#%RAML 1.0 DataType
+description: The result of the calculate-price request. 
+displayName: CalculatePriceResponse
+type: object
+properties:
+  graphId:
+    required: true
+    type: string
+    description: Not used but must be populated.
+  records:
+    required: true
+    type: array
+    items: !include ObjectWithReferenceResponseRepresentation.raml
+
+# PLEASE DO NOT ADD EXAMPLES HERE.
+# Add them in the appropriate response body example files. You can find these files in ../responseBodyExamples

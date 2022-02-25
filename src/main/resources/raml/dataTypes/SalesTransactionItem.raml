@@ -1,0 +1,131 @@
+#%RAML 1.0 DataType
+description: Defines the properties of a line-level object in a sales transaction; for example, an order item in an order. 
+displayName: SalesTransactionItem
+type: lib.SalesTransactionItem
+examples: 
+  Example of a SalesTransactionItem record: !include ../examples/SalesTransactionItem.json
+properties:
+  attributes:
+    required: true
+    type: !include Attributes.raml
+  SalesTransactionId:
+    required: true
+    type: string
+    description: The SalesTransaction to which this SalesItem belongs.
+  ProductId:
+    required: true
+    type: string
+    description: A reference to the product being represented by this SalesItem.
+  CurrencyIsoCode:
+    required: false
+    type: string
+    description: The Currency ISO Code.
+  SalesItemType:
+    required: false
+    type: string
+    enum: [Product, Charge]
+    description: The type of product represented by this SalesItem - whether it's a charge or an actual sellable product. The default value is `Product`. 
+  Quantity:
+    required: true
+    type: number
+    description: The number of items being bought.
+  ListPrice:
+    required: false
+    type: number
+    description: The MSRP of the product.
+  StartingUnitPrice:
+    required: false
+    type: number
+    description: The starting unit price (aka customer price, starting price) of the product.
+  StartingUnitPriceSource:
+    required: false
+    type: string
+    enum: [System, Manual]
+    description: Designates whether the starting unit price is entered manually or is drawn from the price book or other internal system. The default value is `System` if the StartingUnitPrice is not specified, otherwise the default value is `Manual`.
+  NetUnitPrice:
+    required: false
+    type: number
+    description: The final unit price of the product after all adjustments have been applied.
+  ListPriceTotal:
+    required: false
+    type: number
+    description: Rounded(Quantity * ListPrice). Will be rounded only if a Rounding Mode is specified. 
+  StartingPriceTotal:
+    required: false
+    type: number
+    description: Rounded(Quantity * StartingUnitPrice). Will be rounded only if a Rounding Mode is specified. 
+  TotalLineAmount:
+    required: false
+    type: number
+    description: Rounded(PricingTermCount * StartingPriceTotal). Will be rounded only if a Rounding Mode is specified. 
+  TotalAdjustmentAmount:
+    required: false
+    type: number
+    description: Summation of `PriceAdjustmentItem.TotalAmount` for this item.
+  TotalAdjustmentDistAmount:
+    required: false
+    type: number
+    description: Summation of `PriceAdjustmentItem.TotalAmount` that come from header level group adjustments. 
+  TotalPrice:
+    required: false
+    type: number
+    description: Summation of `TotalAdjustmentAmount + TotalLineAmount` for this item.
+  StockKeepingUnit:
+    required: false
+    type: string
+    description: Product SKU for the SalesItem. Will default to `Product2.StockKeepingUnit` if not specified.
+  PricebookEntryId:
+    required: false
+    type: string
+    description: A reference to the PricebookEntry Object. 
+  ProductSellingModelId:
+    required: true
+    type: string
+    description: A reference to ProductSellingModel. 
+  StartDate:
+    required: false
+    type: date-only
+    description: The start date for the subscription in the format `yyyy-mm-dd`. Required when pricing evergreen and term-defined products. Can be specified either at the header or the line item level or both. When specified at both places, line item start date gets precedence over header start date. 
+  EndDate:
+    required: false
+    type: date-only
+    description: The end date for the subscription in the format `yyyy-mm-dd`. Used only when pricing term-defined products. Can be specified either at the header or the line item level or both. When specified at both places, line item end date gets precedence over header end date. 
+  SubscriptionTerm:
+    required: false
+    type: number
+    description: The number of terms over which the subscription spans. Used only when pricing term-defined products. You can specify either End Date or Subscription Term when pricing term-defined products but not both. Can be specified either at the header or the line item level or both. When specified at both places, line item subscription term gets precedence over header subscription term. 
+  ProFormaBillingPeriodAmount:
+    required: false
+    type: number
+    description: The preliminary price to charge per billing period. The final billing period amount on the billing schedule can include subsequent amendments, discounts, or charges.
+  PricingTermCount:
+    required: false
+    type: number
+    description: A calculated field indicating the number of pricing terms in the subscription. For one-time and evergreen products PricingTermCount = 1. 
+  BillingFrequency:
+    required: false
+    type: string
+    enum: [Monthly]
+    description: Enum to define the Billing Frequency.
+  PeriodBoundary:
+    required: false
+    type: string
+    enum: [AlignToCalendar, Anniversary, DayOfPeriod, EndOfPeriod]
+    description: Boundary delimiters for periods, determines when a period starts and/or ends. Will default to Anniversary if not specified.
+  PeriodBoundaryDay:
+    required: false
+    type: number
+    description: The number specifying the day number when Period Boundary is a specific day in a week/month/year.
+  ProrationPolicyId: 
+    required: false
+    type: string
+    description: The foreign key to `ProrationPolicy`. 
+  PricingTransactionType:
+    required: false
+    type: string
+    enum: [NewSale, Cancellation]
+    description: Enum that captures the intent behind the action that is being performed on pricing.
+  BasisTransactionItemId:
+    required: false
+    type: string
+    description: Points to a previous sales transaction item to use for calculations for the given PricingTransactionType.

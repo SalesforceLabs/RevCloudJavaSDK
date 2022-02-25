@@ -1,0 +1,48 @@
+#%RAML 1.0 DataType
+description: Defines the top-level discount for a sales transaction. An example of a top-level discount is 10% off an entire order.
+displayName: PriceAdjustmentGroup
+type: lib.PriceAdjustmentGroup
+examples:
+  Example of a PriceAdjustmentGroup record: !include ../examples/PriceAdjustmentGroup.json
+properties:
+  attributes:
+    required: true
+    type: !include Attributes.raml
+  CurrencyIsoCode:
+    required: false
+    type: string
+    description: The currency ISO Code.
+  SalesTransactionId:
+    required: true
+    type: string
+    description: The Sales Transaction tied to this Price Adjustment Group.
+  Description:
+    required: false
+    type: string
+    description: Description of the Price Adjustment Group.
+  TotalAmount:
+    required: false
+    type: number
+    description: Summation of all the `PriceAdjustmentItem.TotalAmount` fields.
+  AdjustmentType:
+    required: true
+    type: string
+    enum: [AdjustmentPercentage, AdjustmentAmount]
+    description: Enum to define the type of price adjustment.
+  AdjustmentValue:
+    required: true
+    type: number
+    description: A number to represent the price adjustment value itself.
+  AdjustmentSource:
+    required: true
+    type: string
+    enum: [System, Discretionary, Promotion]
+    description: Helps you track the type of price adjustment. Discretionary indicates that the price adjustment was entered manually by the sales rep. Promotion indicates that the price adjustment results from a promotion.  
+  Priority:
+    required: false
+    type: number
+    description: Set the sequence in which adjustments are applied.
+  PriceAdjustmentCauseId:
+    required: false
+    type: string
+    description: A reference to the PriceAdjCauseInterface.

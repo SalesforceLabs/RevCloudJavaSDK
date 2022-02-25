@@ -1,0 +1,12 @@
+#%RAML 1.0 DataType
+description: SObject Graph Record Attributes
+displayName: attributes
+type: object
+examples:
+  Here is an example of a SalesTransaction Attribute: !include ../examples/SalesTransactionAttribute.json
+  Here is an example of a SalesTransactionItem Attribute: !include ../examples/SalesTransactionItemAttribute.json
+properties:
+  type:
+    required: true
+    type: string
+    description: The SObject type being sent in through the input

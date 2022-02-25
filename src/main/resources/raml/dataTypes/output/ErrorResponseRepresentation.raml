@@ -1,0 +1,15 @@
+#%RAML 1.0 Library
+# Using RAML Library as our Error type can be either null or non-null
+# See - https://github.com/raml-org/raml-spec/issues/713
+types:
+  Error:
+    type: object
+    properties:
+      errorCode:
+        required: true
+        type: string
+        description: Error Code
+      message:
+        required: true
+        type: string
+        description: Message stating the reason for error, if any

@@ -1,0 +1,27 @@
+# API manifest
+-
+    endpoint: /actions/standard/createOrderFromQuote
+    event: QuoteToOrderCompletedEvent
+-
+    endpoint: /actions/standard/createOrUpdateAssetFromOrder
+    event: CreateAssetOrderEvent
+-
+    endpoint: /actions/standard/createBillingScheduleFromOrderItem
+    event: BillingScheduleCreatedEvent
+-
+    endpoint: /actions/standard/createInvoiceFromOrder
+    event: InvoiceProcessedEvent
+-
+    endpoint: /actions/standard/paymentSale
+    event: PaymentCreationEvent
+-
+    endpoint: /actions/standard/applyPayment
+-
+    endpoint: /commerce/pricing/{sobject}/actions/calculate-price
+    raml: raml/pricing_engine.raml
+    className: CalculatePrice
+    package: com.salesforce.revcloud.api.generated.commerce.pricing
+
+# Sample Buy Now API
+#-
+#    endpoint: /actions/custom/flow/revenue_buynow__BuyNow

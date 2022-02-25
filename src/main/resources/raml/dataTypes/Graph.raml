@@ -1,0 +1,15 @@
+#%RAML 1.0 DataType
+description: A collection of SObjects to be priced as part of a transaction.
+displayName: Graph
+type: object
+examples:
+  Here is an example of a sales transaction graph: !include ../examples/graph.json
+properties:
+  graphId:
+    required: true
+    type: string
+    description: The unique identifier associated with a graph.
+  records:
+    required: true
+    type: Record[]
+    description: An object that will be priced or that will help price another object in the transaction.

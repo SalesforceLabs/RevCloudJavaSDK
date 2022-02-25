@@ -1,0 +1,57 @@
+#%RAML 1.0 DataType
+description: Interface that defines a discount for a sales transaction item.
+displayName: PriceAdjustmentItem
+type: lib.PriceAdjustmentItem
+examples:
+  Example of a PriceAdjustmentItem record: !include ../examples/PriceAdjustmentItem.json
+properties:
+  attributes:
+    required: true
+    type: !include Attributes.raml
+  CurrencyIsoCode:
+    required: false
+    type: string
+    description: The currency ISO Code.
+  SalesTransactionItemId:
+    required: true
+    type: string
+    description: The sales transaction item to which this price adjustment item is associated with.
+  PriceAdjustmentGroupId:
+    required: false
+    type: string
+    description: A reference to the price adjustment group.
+  AdjustmentSource:
+    required: true
+    type: string
+    enum: [System, Discretionary, Promotion]
+    description: Enum to define the source of Price Adjustment. Discretionary indicates that the price adjustment was entered manually by the sales rep. Promotion indicates that the price adjustment results from a promotion. 
+  Description:
+    required: false
+    type: string
+    description: Description of the adjustment.
+  TotalAmount:
+    required: false
+    type: number
+    description: Total rounded amount of prorated adjustment contributed to by this price adjustment item. Will be rounded only if a Rounding Mode is specified.
+  AdjustmentType:
+    required: true
+    type: string
+    enum: [AdjustmentPercentage, AdjustmentAmount]
+    description: Enum to define the type of price adjustment.
+  AdjustmentValue:
+    required: true
+    type: number
+    description: A number to represent the price adjustment value itself.
+  Priority:
+    required: false
+    type: number
+    description: Set the sequence in which adjustments are applied.
+  PriceAdjustmentCauseId:
+    required: false
+    type: string
+    description: A reference to the PriceAdjCauseInterface.
+  AdjustmentAmountScope:
+    required: false
+    type: string
+    enum: [Unit, Total]
+    description: Enum to define the scope of Adjustment Amount. Required only when AdjustmentType = AdjustmentAmount. 

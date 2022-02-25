@@ -1,0 +1,34 @@
+#%RAML 1.0 DataType
+description: Defines the properties of a sales transaction.
+displayName: SalesTransaction
+type: lib.SalesTransaction
+examples: 
+  Example of a SalesTransaction record: !include ../examples/SalesTransaction.json
+properties:
+  attributes:
+    required: true
+    type: !include Attributes.raml
+  CurrencyIsoCode:
+    required: false
+    type: string
+    description: The currency ISO Code.
+  TotalListAmount:
+    required: false
+    type: number
+    description: Summation of all the `SalesTransactionItem.ListPriceTotal` fields.
+  TotalAmount:
+    required: false
+    type: number
+    description: Summation of all the `SalesTransactionItem.TotalPrice` fields.
+  TotalProductAmount:
+    required: false
+    type: number
+    description: Summation of all the `SalesTransactionItem.StartingPriceTotal` fields where `SalesTransactionItem.Type == Product`.
+  TotalAdjustmentAmount:
+    required: false
+    type: number
+    description: Summation of all the `SalesTransactionItem.TotalAdjustmentAmount` fields.
+  TotalAdjustmentDistAmount:
+    required: false
+    type: number
+    description: Summation of all the `SalesTransactionItem.TotalAdjustmentDistAmount` fields.

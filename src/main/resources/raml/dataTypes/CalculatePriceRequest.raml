@@ -1,0 +1,47 @@
+#%RAML 1.0 DataType
+# Document source for examples: https://salesforce.quip.com/VgbjALh6T6gW
+description: The payload of a calculate price request.
+type: object
+examples:
+  Example of a pricing request for the catalog price with no discounts: !include ../examples/PriceRequestCatalog1.json
+  Example of a pricing request for the final price flow with item level discounts: !include ../examples/PriceRequestFinalPrice1.json
+properties:
+  listPricebookId:
+    required: true
+    type: string
+    description: The ID of the price book to use when calculating the list unit price (MSRP).
+  candidatePricebookIds:
+    required: false
+    type: array
+    items: string
+    description: The IDs of the pricebooks to use when calculating the starting unit price. If not populated in the request payload use the listPricebookId to calculate the starting unit price.
+  pricingFlow:
+    required: true
+    type: string
+    description: Indicates the approach to use when calculating the best price. Allowed values are `GET_FINAL_PRICE` and `GET_CATALOG_PRICE`.
+  roundingMode:
+    required: false
+    type: string
+    enum: [RoundHalfUp, RoundHalfDown, RoundUp, RoundDown]
+    description: Indicates the rule to use when rounding the price values. For more information, refer to Java RoundingMode
+  startDate:
+    required: false
+    type: string
+    description: Subscription start date in the format "yyyy-mm-dd". For calculation purposes, the time component and the timezone are assumed to be Coordinated Universal Time (UTC).
+  endDate:
+    required: false
+    type: string
+    description: Subscription end date in the format "yyyy-mm-dd". For calculation purposes, the time component and the timezone are assumed to be Coordinated Universal Time (UTC).
+  subscriptionTerm:
+    required: false
+    type: integer
+    description: The number of subscription term units for the subscription. For example, if subscriptionTermUnit is 'Months' and subscriptionTerm is '12', the subscription lasts for 12 months.
+  subscriptionTermUnit:
+    required: false
+    type: string
+    enum: [Months]
+    description: Unit of time for the subscription.
+  graph:
+    required: true
+    type: Graph
+    description: List of items to be priced.

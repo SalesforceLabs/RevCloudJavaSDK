@@ -1,0 +1,161 @@
+#%RAML 1.0
+baseUri: /commerce/payments/authorizations #
+title: Authorization API
+description: Payment Authorization service API
+mediaType:
+  - application/json
+version: "v55.0"
+protocols:
+  - HTTPS
+types:
+  AuthorizationInputRepresentation:
+    description: "Payment Authorization input consumed by Payment Authorization service"
+    type: object
+    properties:
+      accountId:
+        type: ID
+      amount:
+        required: true
+        type: number
+      comments:
+        type: string
+      currencyIsoCode:
+        required: true
+        type: string
+      effectiveDate:
+        type: date-only
+      paymentGroup:
+        type: PaymentGroupInputRepresentation
+      paymentMethod:
+        required: true
+        type: AuthApiPaymentMethodInputRepresentation
+      paymentGatewayId:
+        required: true
+        type: ID
+      ipAddress:
+        type: string
+      email:
+        type: string
+      macAddress:
+        type: string
+      phone:
+        type: string
+      idempotencyKey:
+        type: string
+      duplicate:
+        type: boolean
+      additionalData:
+        type: AdditionalDataInputRepresentation
+  PaymentGroupInputRepresentation:
+    description: "Payment group input consumed by a payment group service"
+    type: object
+    properties:
+      id:
+        type: ID
+      sourceObjectId:
+        type: ID
+      currencyIsoCode:
+        type: string
+      createPaymentGroup:
+        type: boolean
+  AuthApiPaymentMethodInputRepresentation:
+    description: "Payment Method input representation for Authorization"
+    type: object
+    properties:
+      cardPaymentMethod:
+        required: true
+        type: CardPaymentMethodInputRepresentation
+      id:
+        type: ID
+      saveForFuture:
+        type: boolean
+      address:
+        type: AddressInputRepresentation
+  CardPaymentMethodInputRepresentation:
+    description: "Card Payment Method input representation"
+    type: object
+    properties:
+      cardHolderName:
+        type: string
+      expiryMonth:
+        type: integer
+      expiryYear:
+        type: integer
+      startMonth:
+        type: integer
+      startYear:
+        type: integer
+      cvv:
+        type: string
+      cardNumber:
+        required: true
+        type: string
+      email:
+        type: string
+      comments:
+        type: string
+      cardType:
+        type: string
+      cardCategory:
+        type: string
+      nickName:
+        type: string
+      cardHolderFirstName:
+        type: string
+      cardHolderLastName:
+        type: string
+  AddressInputRepresentation:
+    description: "Address input representation"
+    type: object
+    properties:
+      street:
+        type: string
+      city:
+        type: string
+      state:
+        type: string
+      country:
+        type: string
+      postalCode:
+        type: string
+      companyName:
+        type: string
+  AdditionalDataInputRepresentation:
+    description: "Wraps a map of additional data for all connect services"
+    type: object
+    properties:
+      inputMap:
+        required: false
+        type: TypeWithMap
+  TypeWithMap:
+    properties:
+      map:
+        properties:
+          //: any
+          type: string
+  ID:
+    description: "ID data type"
+    type: string
+/commerce/payments/authorizations:
+  post:
+    body:
+      application/json:
+        description:
+        type: AuthorizationInputRepresentation
+        example: !include /auth.json
+    responses:
+      200:
+        body:
+          application/json:
+            description:
+            example: !include /auth_success.json
+      400:
+        body:
+          application/json:
+            description:
+            example: !include /auth_400.json
+      500:
+        body:
+          application/json:
+            description:
+            example: !include /auth_500.json

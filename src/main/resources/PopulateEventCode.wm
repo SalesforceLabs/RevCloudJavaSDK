@@ -1,0 +1,40 @@
+${event.getClassName()} ${event.getCamelCaseClassName()} = new ${event.getClassName()}();
+#foreach($field in ${event.fields})
+#if ($field.isArray())
+        Object[] ${field.name}Array = (Object[])${payloadVar}.get("${field.getCapitalizedName()}");
+        if (${field.name}Array != null) {
+        #if ($field.isComplex())
+            for (Object ${field.name}Obj : ${field.name}Array) {
+                Map<String, Object> ${field.name}Map = (Map<String, Object>)${field.name}Obj;
+                ${field.getInnerPopulateCode()}
+                ${event.getCamelCaseClassName()}.get${field.getCapitalizedPluralName()}().add(${field.getCamelCaseClassName()});
+            }
+        #end
+        }
+#else
+#if ($field.isComplex())
+Map<String, Object> ${field.name}Map = (Map<String, Object>)${payloadVar}.get("${field.getCapitalizedName()}");
+if (${field.name}Map != null) {
+    ${field.getInnerPopulateCode()}
+    ${event.getCamelCaseClassName()}.set${field.getCapitalizedName()}(${field.name});
+}
+#else
+#if ($field.isDateType())
+String ${field.name}Date = (String)${payloadVar}.get("${field.getCapitalizedName()}");
+if (${field.name}Date != null){
+    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+    ${event.getCamelCaseClassName()}.set${field.getCapitalizedName()}(format.parse(${field.name}Date));
+}
+#else
+#if ($field.isSObjectType())
+    ObjectMapper mapper = new ObjectMapper();
+    mapper.findAndRegisterModules();
+    SObject sobject = mapper.convertValue(${payloadVar}.get("${field.getCapitalizedName()}"), SObject.class);
+    ${event.getCamelCaseClassName()}.set${field.getCapitalizedName()}(sobject);
+#else
+        ${event.getCamelCaseClassName()}.set${field.getCapitalizedName()}((${field.dataType})${payloadVar}.get("${field.getCapitalizedName()}"));
+#end
+#end
+#end
+#end
+#end
