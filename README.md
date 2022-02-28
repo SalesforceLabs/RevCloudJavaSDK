@@ -78,3 +78,6 @@ After generation completes, compile the project by running ```mvn compile```. Yo
 
 ```package``` Optional override of the -package argument specified in the GenerateAPI program. This helps better organize the generated code and avoid potential conflicts.
 
+#### License
+
+RevCloudJavaSDK is available under the [BSD-3 license](license.md)
