@@ -163,7 +163,7 @@ public abstract class AbstractApi implements ClientSessionChannel.MessageListene
                 (correlationId != null && correlationId.equals(payload.get("CorrelationIdentifier")))) {
             apiResponse.setCorrelationId((String)payload.get("CorrelationIdentifier"));
             apiResponse.setAsyncEventReceived(true);
-            LOGGER.debug("Got matching event for API invocation: " + message);
+            LOGGER.debug("Got matching event for API invocation for request: " + payload.get("RequestIdentifier"));
             // event success flag
             if (Boolean.TRUE.equals(payload.get("HasErrors")) || Boolean.FALSE.equals(payload.get("IsSuccess"))) {
                 apiResponse.setSuccess(false);
@@ -180,7 +180,7 @@ public abstract class AbstractApi implements ClientSessionChannel.MessageListene
                 semaphore.notify();
             }
         } else {
-            LOGGER.warn("Got message but not matching request id: " + apiResponse.getRequestId() + ", message: " + message);
+            LOGGER.warn("Got message but not matching request id: " + apiResponse.getRequestId());
         }
     }
 

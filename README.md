@@ -54,10 +54,10 @@ new CreateOrderFromQuote(apiContext).setQuoteRecordId(quoteId).setMessageConsume
 
 The RevCloudSDK comes with the ability to generate API client code based on Salesforce's API description or RAML spec. 
 
-To generate client code for an API, add the relevant API information to src/main/resources/manifest.yaml (or a separate yaml file passed with the "-f" argument). Then run GenerateAPI:
+To generate client code for an API, add the relevant API information to src/main/resources/manifest.yaml. Then run GenerateAPI:
 
 ```
-java GenerateAPI -h [Salesforce login host] -u [username] -p [password] -v 55.0 -pkg com.salesforce.revcloud.api.generated -d [java source directory]
+java GenerateAPI -h [Salesforce login host] -u [username] -p [password] -v 55.0 -pkg com.salesforce.revcloud.api.generated
 ```
 
 After generation completes, compile the project by running ```mvn compile```. You'll find the newly generated files in the packages specified, for example:
