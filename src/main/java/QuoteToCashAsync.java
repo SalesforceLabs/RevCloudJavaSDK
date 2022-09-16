@@ -1,3 +1,4 @@
+import com.google.common.html.HtmlEscapers;
 import com.salesforce.revcloud.ApiContext;
 import com.salesforce.revcloud.api.SoqlQuery;
 import com.salesforce.revcloud.api.generated.*;
@@ -111,7 +112,9 @@ public class QuoteToCashAsync {
     }
 
     private void fail(String error) {
-        System.out.println(error);
+        if (error != null) {
+            System.out.println(HtmlEscapers.htmlEscaper().escape(error));
+        }
         synchronized (semaphore) {
             semaphore.notify();
         }

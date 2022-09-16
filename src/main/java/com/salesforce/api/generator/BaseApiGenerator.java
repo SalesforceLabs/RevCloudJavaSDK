@@ -28,13 +28,13 @@ public abstract class BaseApiGenerator {
         this.destination = destination;
     }
 
-    protected String getDestinationFile(String packageSuffix, String fileName) {
+    protected String getDestinationFile(String packageSuffix, String fileName) throws IOException {
         return getDestinationFile(packageSuffix, fileName, this.packageName);
     }
 
-    protected String getDestinationFile(String packageSuffix, String fileName, String packageName) {
+    protected String getDestinationFile(String packageSuffix, String fileName, String packageName) throws IOException {
         String rootPath = this.destination + "/" + packageName.replaceAll("\\.", "/") + "/" + packageSuffix.replaceAll("\\.", "/");
-        File rootDir = new File(rootPath);
+        File rootDir = new File(rootPath).getCanonicalFile();
         if (!rootDir.exists()) {
             rootDir.mkdirs();
         }
